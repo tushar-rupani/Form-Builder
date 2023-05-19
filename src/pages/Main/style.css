@@ -1,0 +1,28 @@
+.main-context{
+    display: grid;
+    grid-template-columns: 15% 85%;
+    gap: 20px;
+}
+
+.draggable-part{
+    background-color: #F4F4F7;
+    padding: 10px;
+    height: 100vh;
+    border-right: 1px solid rgb(0, 0, 0, 0.2);
+}
+.droppable-part{
+    padding: 10px;
+    height: 100vh;
+}
+
+.input__element{
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    margin: 10px;
+}
