@@ -52,6 +52,7 @@ export interface OptionType {
   id: number,
   key: string;
   value: string;
+  selected: boolean | string
 }
 
 export const InitialObjectForInput: { [key: string]: string | OptionType[] | boolean } = {
@@ -67,5 +68,5 @@ export const InitialObjectForInput: { [key: string]: string | OptionType[] | boo
   readOnly: false,
   defaultValue: "",
   focus: false,
-  options: [{ id: 1, key: "o1", value: "Option 1" }]
+  options: [{ id: 1, key: "o1", value: "Option 1", selected: true }]
 }

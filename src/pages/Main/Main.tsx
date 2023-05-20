@@ -6,7 +6,8 @@ import { InitialObjectForInput } from "../../utils/_const";
 import { ElementCard } from "./ElementCard";
 import { Modal, Input, Alert, Switch, Typography, Button } from "antd";
 import logo from "../../assets/images/form-builder-logo.png";
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import { MouseEvent } from 'react';
 
 export const Main = () => {
   interface AllElementType {
@@ -16,6 +17,7 @@ export const Main = () => {
   const options = currentElement.options as OptionType[];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allElements, setAllElements] = useState<AllElementType[]>([]);
+  const [alertVisible, setAlertVisible] = useState<boolean>(true);
   const { confirm } = Modal;
   const { Text } = Typography;
   // eslint-disable-next-line
@@ -24,6 +26,7 @@ export const Main = () => {
     drop: (item: any) => {
       showModal();
       setCurrentElement((prev) => ({ ...prev, element: item.text, type: item.type }));
+      setAlertVisible(false);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
@@ -36,13 +39,12 @@ export const Main = () => {
   const handleAddOption = () => {
     setCurrentElement((prev) => ({
       ...prev,
-      options: [...prev.options as OptionType[], { id: 1, key: "text", value: "text" }]
+      options: [...prev.options as OptionType[], { id: options.length + 1, key: "text", value: "text", selected: false }]
     }))
   }
 
   useEffect(() => {
     console.log(currentElement);
-
   }, [currentElement])
 
   const handleOk = () => {
@@ -77,11 +79,33 @@ export const Main = () => {
   const handleOptionChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const cloneOfObj = { ...currentElement };
     const options: OptionType[] = cloneOfObj.options as OptionType[];
-    options[index].key = e.target.value.toLowerCase().replace(/\s/g, "-");
-    options[index].value = e.target.value;
+    options[index - 1].key = e.target.value.toLowerCase().replace(/\s/g, "-");
+    if (options[index - 1].selected !== false) {
+      options[index - 1].selected = e.target.value.toLowerCase().replace(/\s/g, "-");
+    }
+    options[index - 1].value = e.target.value;
     setCurrentElement(cloneOfObj);
   }
 
+  const handleDeleteOption = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    const cloneObj = { ...currentElement };
+    const options: OptionType[] = cloneObj.options as OptionType[];
+    const newOptions = options.filter((option) => option.id !== index);
+    cloneObj.options = newOptions;
+    setCurrentElement(cloneObj);
+
+  }
+
+  const handleDefault = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+    const cloneObj = { ...currentElement };
+    const options: OptionType[] = cloneObj.options as OptionType[];
+    if (currentElement.type === "select") {
+      options.map(option => option.selected = false);
+      options[index - 1].selected = options[index - 1].key;
+      setCurrentElement(cloneObj);
+    }
+
+  }
   useEffect(() => {
     console.log(currentElement);
   }, [currentElement])
@@ -104,15 +128,18 @@ export const Main = () => {
         ))}
       </div>
       <div className="droppable-part" ref={drop}>
-        <Alert
-          message="Drag and Drop!"
-          description="Just Drag whatever element you want to add in your form from left panel and drop it at right panel."
-          type="info"
-          closable
-        />
+        {
+          alertVisible && <Alert
+            message="Drag and Drop!"
+            description="Just Drag whatever element you want to add in your form from left panel and drop it at right panel."
+            type="info"
+            closable
+          />
+        }
+
         {allElements.map((data) => (
           <div>
-            {data.type !== "radio" && data.type !== "select" && data.type !== "file" && data.type !== "button" && (
+            {(data.type === "text" || data.type === "number" || data.type === "password" || data.type === "date") && (
               <div className="output__element">
                 <div className="flex">
                   <label className="margin-10 ">{data.label as string}</label>
@@ -160,7 +187,13 @@ export const Main = () => {
         <Input
           placeholder="Enter Default Value"
           name="defaultValue"
-          type={(currentElement.type === "number") ? "number" : (currentElement.type === "date" ? "date" : "text")}
+          type={currentElement.type === "number"
+            ? "number"
+            : currentElement.type === "date"
+              ? "date"
+              : currentElement.type === "password"
+                ? "password"
+                : "text"}
           className="input__box"
           onChange={handleChange}
           value={currentElement.defaultValue as string}
@@ -175,17 +208,22 @@ export const Main = () => {
               options.map((data, index) => (
                 <>
                   <div className="flex" style={{ gap: "10px" }}>
+                    <input type="checkbox" checked={data.selected as boolean} onChange={(e) => handleDefault(e, data.id)} />
                     <Input
                       placeholder={`Enter Option ${index + 1}`}
                       value={data.value}
-                      onChange={(e) => handleOptionChange(e, index)}
+                      onChange={(e) => handleOptionChange(e, data.id)}
                     />
                     <Input
                       placeholder="Key"
                       value={data.key}
-                      onChange={handleChange}
                       disabled
                     />
+                    <button style={{ background: "red", padding: "2px", color: "white", cursor: "pointer", borderRadius: "5px" }}
+                      onClick={(e) => handleDeleteOption(e, data.id)}
+                    >
+                      <CloseOutlined />
+                    </button>
 
                   </div>
                   <br />
