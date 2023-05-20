@@ -1,1 +1,1 @@
-Form Builder IO: An application which generates forms for you.
+Form Builder IO is a user-friendly application designed to effortlessly generate forms for you.
