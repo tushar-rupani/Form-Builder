@@ -21,6 +21,19 @@ export const dataForElements = [
   { icon: "file", text: "File" },
 ];
 
+export const indexForElement = {
+  0: "Input Box",
+  1: "Text Area",
+  2: "Number",
+  3: "Password",
+  4: "Checkbox",
+  5: "Select",
+  6: "Radio",
+  7: "Button",
+  8: "Date Picker",
+  9: "File"
+}
+
 export const iconObjectInitial: { [key: string]: JSX.Element } = {
   terminal: <TerminalIcon />,
   textarea: <TextFieldsIcon />,
@@ -34,33 +47,11 @@ export const iconObjectInitial: { [key: string]: JSX.Element } = {
   file: <AttachFileIcon />,
 };
 
-/*
-
-interface DataItem {
-  icon: string;
-  text: string;
+export const InitialObjectForInput : {[key:string] : string} = {
+  label: "",
+  placeholder: "",
+  type: "",
+  description: "",
+  key: "",
+  element: ""
 }
-
-const data: DataItem[] = [
-  { icon: 'terminal', text: 'Input Box' },
-  { icon: 'folder', text: 'File Explorer' },
-  { icon: 'settings', text: 'Settings' }
-];
-
-const icons: { [key: string]: JSX.Element } = {
-  terminal: <TerminalIcon />,
-  folder: <FolderIcon />,
-  settings: <SettingsIcon />
-};
-
-return (
-  <div>
-    {data.map((item: DataItem) => (
-      <div className="input__element">
-        {icons[item.icon]}
-        {item.text}
-      </div>
-    ))}
-  </div>
-);
-*/
