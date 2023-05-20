@@ -1,4 +1,3 @@
-import { DragDropContext } from "react-beautiful-dnd";
 import "./App.css";
 import { Main } from "./pages/Main/Main";
 import { DndProvider } from "react-dnd";

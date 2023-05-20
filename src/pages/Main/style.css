@@ -41,3 +41,36 @@
 .margin-10 {
   margin: 10px 0;
 }
+
+.output__element {
+  padding: 20px;
+  border: 1px solid #f4f4f7;
+  border-left: 5px solid #757ce8;
+  border-radius: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.output_text {
+  padding: 10px;
+}
+
+.delete-btn {
+  opacity: 0;
+  display: flex;
+  background-color: rgb(179, 72, 72);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: white;
+  font-weight: 500;
+}
+
+.output__element:hover .delete-btn {
+  opacity: 1;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

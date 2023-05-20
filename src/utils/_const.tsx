@@ -49,6 +49,7 @@ export const iconObjectInitial: { [key: string]: JSX.Element } = {
 
 
 export interface OptionType {
+  id: number,
   key: string;
   value: string;
 }
@@ -66,5 +67,5 @@ export const InitialObjectForInput: { [key: string]: string | OptionType[] | boo
   readOnly: false,
   defaultValue: "",
   focus: false,
-  value: []
+  options: [{ id: 1, key: "o1", value: "Option 1" }]
 }
