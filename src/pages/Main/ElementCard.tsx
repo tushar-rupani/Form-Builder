@@ -4,15 +4,17 @@ import { useDrag } from "react-dnd";
 export const ElementCard = ({
   text,
   icon,
-  index
+  index,
+  type
 }: {
   text: string;
   icon: JSX.Element;
-  index: number
+  index: number;
+  type: string
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "div",
-    item: {text, index},
+    item: { text, index, type },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

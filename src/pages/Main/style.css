@@ -33,3 +33,11 @@
 .indicator {
   background-color: rgb(92, 107, 192);
 }
+
+.input__box {
+  margin: 10px 0;
+}
+
+.margin-10 {
+  margin: 10px 0;
+}

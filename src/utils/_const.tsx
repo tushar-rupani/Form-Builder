@@ -9,16 +9,16 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 export const dataForElements = [
-  { icon: "terminal", text: "Input Box" },
-  { icon: "textarea", text: "Text Area" },
-  { icon: "number", text: "Number" },
-  { icon: "password", text: "Password" },
-  { icon: "checkbox", text: "CheckBox" },
-  { icon: "select", text: "Select" },
-  { icon: "radio", text: "Radio" },
-  { icon: "button", text: "Button" },
-  { icon: "date", text: "Date Picker" },
-  { icon: "file", text: "File" },
+  { icon: "terminal", text: "Input Box", type: "text" },
+  { icon: "textarea", text: "Text Area", type: "textarea" },
+  { icon: "number", text: "Number", type: "number" },
+  { icon: "password", text: "Password", type: "password" },
+  { icon: "checkbox", text: "CheckBox", type: "checkbox" },
+  { icon: "select", text: "Select", type: "select" },
+  { icon: "radio", text: "Radio", type: "radio" },
+  { icon: "button", text: "Button", type: "button" },
+  { icon: "date", text: "Date Picker", type: "date" },
+  { icon: "file", text: "File", type: "file" },
 ];
 
 export const indexForElement = {
@@ -47,11 +47,24 @@ export const iconObjectInitial: { [key: string]: JSX.Element } = {
   file: <AttachFileIcon />,
 };
 
-export const InitialObjectForInput : {[key:string] : string} = {
+
+export interface OptionType {
+  key: string;
+  value: string;
+}
+
+export const InitialObjectForInput: { [key: string]: string | OptionType[] | boolean } = {
   label: "",
   placeholder: "",
   type: "",
   description: "",
   key: "",
-  element: ""
+  element: "",
+  helperText: "",
+  required: true,
+  disable: false,
+  readOnly: false,
+  defaultValue: "",
+  focus: false,
+  value: []
 }
