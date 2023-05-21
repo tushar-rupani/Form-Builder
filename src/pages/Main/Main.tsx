@@ -4,26 +4,29 @@ import { OptionType, dataForElements, iconObjectInitial } from "../../utils/_con
 import { useDrop } from "react-dnd";
 import { InitialObjectForInput } from "../../utils/_const";
 import { ElementCard } from "./ElementCard";
-import { Modal, Input, Alert, Switch, Typography, Button } from "antd";
+import { Modal, Input, Alert, Switch, Button } from "antd";
 import logo from "../../assets/images/form-builder-logo.png";
 import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { MouseEvent } from 'react';
+import InputBox from "../Elements/InputBox";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
+export interface AllElementType {
+  [key: string]: string | boolean | OptionType[] | number;
+}
 export const Main = () => {
-  interface AllElementType {
-    [key: string]: string | boolean | OptionType[];
-  }
+
   const [currentElement, setCurrentElement] = useState(InitialObjectForInput);
   const options = currentElement.options as OptionType[];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allElements, setAllElements] = useState<AllElementType[]>([]);
   const [alertVisible, setAlertVisible] = useState<boolean>(true);
   const { confirm } = Modal;
-  const { Text } = Typography;
+
   // eslint-disable-next-line
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "div",
-    drop: (item: any) => {
+    drop: (item: any, monitor) => {
       showModal();
       setCurrentElement((prev) => ({ ...prev, element: item.text, type: item.type }));
       setAlertVisible(false);
@@ -32,6 +35,8 @@ export const Main = () => {
       isOver: !!monitor.isOver(),
     }),
   }));
+
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -44,8 +49,8 @@ export const Main = () => {
   }
 
   useEffect(() => {
-    console.log(currentElement);
-  }, [currentElement])
+    console.log({ currentElement, allElements });
+  }, [currentElement, allElements])
 
   const handleOk = () => {
     setAllElements([...allElements, currentElement])
@@ -80,9 +85,6 @@ export const Main = () => {
     const cloneOfObj = { ...currentElement };
     const options: OptionType[] = cloneOfObj.options as OptionType[];
     options[index - 1].key = e.target.value.toLowerCase().replace(/\s/g, "-");
-    if (options[index - 1].selected !== false) {
-      options[index - 1].selected = e.target.value.toLowerCase().replace(/\s/g, "-");
-    }
     options[index - 1].value = e.target.value;
     setCurrentElement(cloneOfObj);
   }
@@ -101,9 +103,31 @@ export const Main = () => {
     const options: OptionType[] = cloneObj.options as OptionType[];
     if (currentElement.type === "select") {
       options.map(option => option.selected = false);
-      options[index - 1].selected = options[index - 1].key;
+      options[index - 1].selected = true;
+      setCurrentElement(cloneObj);
+    } else {
+      options[index - 1].selected = true;
       setCurrentElement(cloneObj);
     }
+  }
+
+  const handleDeleteQuestion = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    const cloneObj: AllElementType[] = [...allElements];
+    cloneObj.splice(index, 1);
+    setAllElements(cloneObj)
+
+  }
+  const handleDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+    // console.log("called");
+    const reOrderedElements = [...allElements];
+    const [removed] = reOrderedElements.splice(result.source.index, 1);
+    reOrderedElements.splice(result.destination.index, 0, removed);
+    console.log(reOrderedElements);
+
+    setAllElements(reOrderedElements)
 
   }
   useEffect(() => {
@@ -137,21 +161,42 @@ export const Main = () => {
           />
         }
 
-        {allElements.map((data) => (
-          <div>
-            {(data.type === "text" || data.type === "number" || data.type === "password" || data.type === "date") && (
-              <div className="output__element">
-                <div className="flex">
-                  <label className="margin-10 ">{data.label as string}</label>
-                  <button className="delete-btn">X</button>
-                </div>
-                <Input className="margin-10 output_text" type={data.type as string} placeholder={data.placeholder as string} required={data.required as boolean} autoFocus={data.focus as boolean} disabled={data.disable as boolean} defaultValue={data.defaultValue as string} />
-                <Text strong className="margin-10 ">{data.helperText as string}</Text>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {allElements.map((data, index) => (
+                  <div>
+                    {(data.type === "text" || data.type === "number" || data.type === "password" || data.type === "date") && (
+                      <div className="output__element">
+                        <InputBox data={data} index={index} handleDeleteQuestion={handleDeleteQuestion} />
+                      </div>
+                    )}
+
+                    {data.type === "select" && (
+                      <div className="output__element">
+                        <div className="flex">
+                          <label className="margin-10 ">{data.label as string}{data.required && <span style={{ color: "red" }}>*</span>}</label>
+                          <button className="delete-btn" onClick={(e) => handleDeleteQuestion(e, index)}>X</button>
+                        </div>
+                        <select>
+                          {Array.isArray(data.options) && (
+                            data.options.map((element) => (
+                              <option value={element.key} selected={element.selected as boolean}>{element.value}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
+                    )}
+                    <br />
+                  </div>
+                ))}
               </div>
             )}
-            <br />
-          </div>
-        ))}
+
+          </Droppable>
+        </DragDropContext>
+
       </div>
 
       <Modal
@@ -200,7 +245,7 @@ export const Main = () => {
         />
         <br /><br />
 
-        {(currentElement.type === "radio" || currentElement.type === "select") ?
+        {(currentElement.type === "radio" || currentElement.type === "select" || currentElement.type === "checkbox") ?
           <div>
             <span>Add Options</span>
             <br /><br />

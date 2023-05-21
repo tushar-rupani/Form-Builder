@@ -55,7 +55,8 @@ export interface OptionType {
   selected: boolean | string
 }
 
-export const InitialObjectForInput: { [key: string]: string | OptionType[] | boolean } = {
+export const InitialObjectForInput: { [key: string]: string | OptionType[] | boolean | number } = {
+  id: 0,
   label: "",
   placeholder: "",
   type: "",
