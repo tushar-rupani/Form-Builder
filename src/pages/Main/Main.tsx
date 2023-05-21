@@ -4,12 +4,13 @@ import { OptionType, dataForElements, iconObjectInitial } from "../../utils/_con
 import { useDrop } from "react-dnd";
 import { InitialObjectForInput } from "../../utils/_const";
 import { ElementCard } from "./ElementCard";
-import { Modal, Input, Alert, Switch, Button } from "antd";
+import { Modal, Input, Alert, Switch, Button, Typography } from "antd";
 import logo from "../../assets/images/form-builder-logo.png";
 import { CloseOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { MouseEvent } from 'react';
 import InputBox from "../Elements/InputBox";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import SelectBox from "../Elements/SelectBox";
 
 export interface AllElementType {
   [key: string]: string | boolean | OptionType[] | number;
@@ -23,10 +24,9 @@ export const Main = () => {
   const [alertVisible, setAlertVisible] = useState<boolean>(true);
   const { confirm } = Modal;
 
-  // eslint-disable-next-line
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: "div",
-    drop: (item: any, monitor) => {
+    drop: (item: any) => {
       showModal();
       setCurrentElement((prev) => ({ ...prev, element: item.text, type: item.type }));
       setAlertVisible(false);
@@ -115,24 +115,27 @@ export const Main = () => {
     const cloneObj: AllElementType[] = [...allElements];
     cloneObj.splice(index, 1);
     setAllElements(cloneObj)
+  }
+
+  const handleEditQuestion = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    const cloneObj: AllElementType[] = { ...allElements };
+    setCurrentElement(cloneObj[index]);
+    setIsModalOpen(true)
 
   }
   const handleDragEnd = (result: any) => {
     if (!result.destination) {
       return;
     }
-    // console.log("called");
     const reOrderedElements = [...allElements];
     const [removed] = reOrderedElements.splice(result.source.index, 1);
     reOrderedElements.splice(result.destination.index, 0, removed);
-    console.log(reOrderedElements);
-
     setAllElements(reOrderedElements)
 
   }
-  useEffect(() => {
-    console.log(currentElement);
-  }, [currentElement])
+  // useEffect(() => {
+  //   console.log(currentElement);
+  // }, [currentElement])
   const handleSwitchChange = (name: string) => {
     setCurrentElement((prev) => ({ ...prev, [name]: !prev[name] }))
   }
@@ -153,14 +156,17 @@ export const Main = () => {
       </div>
       <div className="droppable-part" ref={drop}>
         {
-          alertVisible && <Alert
+          alertVisible ? <Alert
             message="Drag and Drop!"
             description="Just Drag whatever element you want to add in your form from left panel and drop it at right panel."
             type="info"
             closable
-          />
+          /> : <Typography.Title level={2} style={{ margin: 0 }}>
+            Preview of your form!
+          </Typography.Title>
         }
 
+        <br />
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
@@ -168,25 +174,11 @@ export const Main = () => {
                 {allElements.map((data, index) => (
                   <div>
                     {(data.type === "text" || data.type === "number" || data.type === "password" || data.type === "date") && (
-                      <div className="output__element">
-                        <InputBox data={data} index={index} handleDeleteQuestion={handleDeleteQuestion} />
-                      </div>
+                      <InputBox data={data} index={index} handleDeleteQuestion={handleDeleteQuestion} handleEditQuestion={handleEditQuestion} />
                     )}
 
                     {data.type === "select" && (
-                      <div className="output__element">
-                        <div className="flex">
-                          <label className="margin-10 ">{data.label as string}{data.required && <span style={{ color: "red" }}>*</span>}</label>
-                          <button className="delete-btn" onClick={(e) => handleDeleteQuestion(e, index)}>X</button>
-                        </div>
-                        <select>
-                          {Array.isArray(data.options) && (
-                            data.options.map((element) => (
-                              <option value={element.key} selected={element.selected as boolean}>{element.value}</option>
-                            ))
-                          )}
-                        </select>
-                      </div>
+                      <SelectBox data={data} index={index} handleDeleteQuestion={handleDeleteQuestion} />
                     )}
                     <br />
                   </div>
@@ -213,15 +205,18 @@ export const Main = () => {
           value={currentElement.label as string}
         />
 
-        <Input
-          placeholder="Enter Placeholder"
-          name="placeholder"
-          className="input__box"
-          onChange={handleChange}
-          value={currentElement.placeholder as string}
-        />
+        {(currentElement.type === "text" || currentElement.type === "number" || currentElement.type === "password" || currentElement.type === "date") && (
+          <Input
+            placeholder="Enter Placeholder"
+            name="placeholder"
+            className="input__box"
+            onChange={handleChange}
+            value={currentElement.placeholder as string}
+          />
+        )}
 
-        <Input
+
+        < Input
           placeholder="Enter Helper Text"
           name="helperText"
           className="input__box"
@@ -229,20 +224,23 @@ export const Main = () => {
           value={currentElement.helperText as string}
         />
 
-        <Input
-          placeholder="Enter Default Value"
-          name="defaultValue"
-          type={currentElement.type === "number"
-            ? "number"
-            : currentElement.type === "date"
-              ? "date"
-              : currentElement.type === "password"
-                ? "password"
-                : "text"}
-          className="input__box"
-          onChange={handleChange}
-          value={currentElement.defaultValue as string}
-        />
+        {(currentElement.type === "text" || currentElement.type === "number" || currentElement.type === "password" || currentElement.type === "date") && (
+          <Input
+            placeholder="Enter Default Value"
+            name="defaultValue"
+            type={currentElement.type === "number"
+              ? "number"
+              : currentElement.type === "date"
+                ? "date"
+                : currentElement.type === "password"
+                  ? "password"
+                  : "text"}
+            className="input__box"
+            onChange={handleChange}
+            value={currentElement.defaultValue as string}
+          />
+        )}
+
         <br /><br />
 
         {(currentElement.type === "radio" || currentElement.type === "select" || currentElement.type === "checkbox") ?
@@ -278,11 +276,11 @@ export const Main = () => {
             <br />
             {options.length < 4 && < Button type="primary" onClick={handleAddOption}> Add More</Button>}
           </div> :
-          <div>
-            Required: <Switch className="margin-10" checked={currentElement.required as boolean} onChange={() => handleSwitchChange("required")} /><br />
-            Disabled: <Switch className="margin-10" checked={currentElement.disable as boolean} onChange={() => handleSwitchChange("disable")} /><br />
-            Focus: <Switch className="margin-10" checked={currentElement.focus as boolean} onChange={() => handleSwitchChange("focus")} /><br />
-            Read Only: <Switch className="margin-10" checked={currentElement.readOnly as boolean} onChange={() => handleSwitchChange("readOnly")} /><br />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            <div>Required: <Switch className="margin-10" checked={currentElement.required as boolean} onChange={() => handleSwitchChange("required")} /><br /></div>
+            <div>Disabled: <Switch className="margin-10" checked={currentElement.disable as boolean} onChange={() => handleSwitchChange("disable")} /><br /></div>
+            <div>Focus: <Switch className="margin-10" checked={currentElement.focus as boolean} onChange={() => handleSwitchChange("focus")} /><br /></div>
+            <div>Read Only: <Switch className="margin-10" checked={currentElement.readOnly as boolean} onChange={() => handleSwitchChange("readOnly")} /><br /></div>
           </div>
         }
       </Modal >
