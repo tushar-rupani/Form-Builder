@@ -9,7 +9,7 @@ interface InputBoxType {
   handleDeleteQuestion: Function;
   handleEditQuestion: Function;
 }
-const SelectBox = ({
+const TextArea = ({
   data,
   index,
   handleDeleteQuestion,
@@ -49,17 +49,7 @@ const SelectBox = ({
               </button>
             </div>
           </div>
-          <select className="select">
-            {Array.isArray(data.options) &&
-              data.options.map((element) => (
-                <option
-                  value={element.key}
-                  selected={element.selected as boolean}
-                >
-                  {element.value}
-                </option>
-              ))}
-          </select>
+          <textarea value={data.defaultValue as string}></textarea>
           <br />
           <Text italic className="margin-10 ">
             {data.helperText as string}
@@ -70,4 +60,4 @@ const SelectBox = ({
   );
 };
 
-export default SelectBox;
+export default TextArea;

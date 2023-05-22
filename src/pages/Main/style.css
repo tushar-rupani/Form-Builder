@@ -98,3 +98,16 @@
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 5px;
 }
+
+.active-bg{
+  background-color: rgba(240, 240, 240, 0.4);
+  border: 1px dotted rgba(0, 0, 0, 0.9);
+}
+
+textarea{
+  width: 95%;
+  resize: none;
+}
+textarea:focus{
+  outline: 1px solid #b0b5fd;
+}

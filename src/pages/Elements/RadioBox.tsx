@@ -1,21 +1,23 @@
 import React from "react";
 import { AllElementType } from "../Main/Main";
-import { Typography } from "antd";
 import { Draggable } from "react-beautiful-dnd";
 import { EditOutlined } from "@ant-design/icons";
-interface InputBoxType {
+import { Typography } from "antd";
+interface PropsType {
   data: AllElementType;
   index: number;
   handleDeleteQuestion: Function;
   handleEditQuestion: Function;
 }
-const SelectBox = ({
+export const RadioBox = ({
   data,
   index,
   handleDeleteQuestion,
   handleEditQuestion,
-}: InputBoxType) => {
+}: PropsType) => {
   const { Text } = Typography;
+  console.log("radio", data);
+
   return (
     <Draggable
       key={index.toString()}
@@ -49,17 +51,18 @@ const SelectBox = ({
               </button>
             </div>
           </div>
-          <select className="select">
-            {Array.isArray(data.options) &&
-              data.options.map((element) => (
-                <option
+          {Array.isArray(data.options) &&
+            data.options.map((element) => (
+              <>
+                <input
+                  type="radio"
                   value={element.key}
-                  selected={element.selected as boolean}
-                >
-                  {element.value}
-                </option>
-              ))}
-          </select>
+                  name={data.id as string}
+                  checked={element.selected as boolean}
+                />{" "}
+                {element.value} <br />
+              </>
+            ))}
           <br />
           <Text italic className="margin-10 ">
             {data.helperText as string}
@@ -69,5 +72,3 @@ const SelectBox = ({
     </Draggable>
   );
 };
-
-export default SelectBox;
