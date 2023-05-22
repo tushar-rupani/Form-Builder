@@ -17,12 +17,20 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import SelectBox from "../Elements/SelectBox";
 import { RadioBox } from "../Elements/RadioBox";
 import { CheckBox } from "../Elements/CheckBox";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TextArea from "../Elements/TextArea";
 
 export interface AllElementType {
   [key: string]: string | boolean | OptionType[] | number;
 }
+export interface FinalObjectType {
+  id: string;
+  form_name: string;
+  data: AllElementType[];
+}
 export const Main = () => {
+  const navigate = useNavigate();
   const [currentElement, setCurrentElement] = useState(InitialObjectForInput);
   const options = currentElement.options as OptionType[];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,6 +39,15 @@ export const Main = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dragged, setDragged] = useState<boolean>(false);
   const { confirm } = Modal;
+  const { state } = useLocation();
+
+  console.log("control comig hjere");
+
+  const finalStateObject: FinalObjectType = {
+    id: state.id,
+    form_name: state.name,
+    data: [],
+  };
 
   const [, drop] = useDrop(() => ({
     accept: "div",
@@ -158,6 +175,13 @@ export const Main = () => {
     setEditMode(true);
     setIsModalOpen(true);
   };
+
+  const handlerButtonType = (e: ChangeEvent<HTMLInputElement>) => {
+    const cloneOfObj = { ...currentElement };
+    cloneOfObj.key = e.target.value;
+    setCurrentElement(cloneOfObj);
+  };
+
   const handleDragEnd = (result: any) => {
     if (!result.destination) {
       return;
@@ -167,9 +191,18 @@ export const Main = () => {
     reOrderedElements.splice(result.destination.index, 0, removed);
     setAllElements(reOrderedElements);
   };
-  useEffect(() => {
-    console.log(allElements);
-  }, [allElements]);
+
+  const addData = () => {
+    finalStateObject.data = allElements;
+    let localStorageData = localStorage.getItem("form-data") || "[]";
+    let arrayOfData = JSON.parse(localStorageData);
+
+    arrayOfData.push(finalStateObject);
+    console.log(arrayOfData);
+    localStorage.setItem("form-data", JSON.stringify(arrayOfData));
+    navigate("/");
+  };
+
   const handleSwitchChange = (name: string) => {
     setCurrentElement((prev) => ({ ...prev, [name]: !prev[name] }));
   };
@@ -205,68 +238,84 @@ export const Main = () => {
             Preview of your form!
           </Typography.Title>
         )}
-        {dragged && allElements.length === 0 && <h2>Drop Element here!</h2>}
+        {dragged && allElements.length === 0 && <span>Drop Element here!</span>}
 
         <br />
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                {allElements.map((data, index) => (
-                  <div>
-                    {(data.type === "text" ||
-                      data.type === "number" ||
-                      data.type === "password" ||
-                      data.type === "date") && (
-                      <InputBox
-                        data={data}
-                        index={index}
-                        handleDeleteQuestion={handleDeleteQuestion}
-                        handleEditQuestion={handleEditQuestion}
-                      />
-                    )}
+                {allElements.length > 0 &&
+                  allElements.map((data, index) => (
+                    <div>
+                      {(data.type === "text" ||
+                        data.type === "number" ||
+                        data.type === "password" ||
+                        data.type === "date" ||
+                        data.type === "file") && (
+                        <InputBox
+                          data={data}
+                          index={index}
+                          handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
+                        />
+                      )}
 
-                    {data.type === "select" && (
-                      <SelectBox
-                        data={data}
-                        index={index}
-                        handleDeleteQuestion={handleDeleteQuestion}
-                        handleEditQuestion={handleEditQuestion}
-                      />
-                    )}
+                      {data.type === "select" && (
+                        <SelectBox
+                          data={data}
+                          index={index}
+                          handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
+                        />
+                      )}
 
-                    {data.type === "radio" && (
-                      <RadioBox
-                        data={data}
-                        index={index}
-                        handleDeleteQuestion={handleDeleteQuestion}
-                        handleEditQuestion={handleEditQuestion}
-                      />
-                    )}
-                    {data.type === "checkbox" && (
-                      <CheckBox
-                        data={data}
-                        index={index}
-                        handleDeleteQuestion={handleDeleteQuestion}
-                        handleEditQuestion={handleEditQuestion}
-                      />
-                    )}
+                      {data.type === "radio" && (
+                        <RadioBox
+                          data={data}
+                          index={index}
+                          handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
+                        />
+                      )}
+                      {data.type === "checkbox" && (
+                        <CheckBox
+                          data={data}
+                          index={index}
+                          handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
+                        />
+                      )}
 
-                    {data.type === "textarea" && (
-                      <TextArea
-                        data={data}
-                        index={index}
-                        handleDeleteQuestion={handleDeleteQuestion}
-                        handleEditQuestion={handleEditQuestion}
-                      />
-                    )}
-                    <br />
-                  </div>
-                ))}
+                      {data.type === "textarea" && (
+                        <TextArea
+                          data={data}
+                          index={index}
+                          handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
+                        />
+                      )}
+
+                      {data.type === "button" && (
+                        <Button
+                          disabled={data.disable as boolean}
+                          type={data.key as any}
+                        >
+                          {data.label as string}
+                        </Button>
+                      )}
+                      <br />
+                    </div>
+                  ))}
               </div>
             )}
           </Droppable>
         </DragDropContext>
+        {allElements.length > 0 && (
+          <Button type="primary" onClick={addData}>
+            Lets Go!
+          </Button>
+        )}
       </div>
 
       <Modal
@@ -295,13 +344,15 @@ export const Main = () => {
           />
         )}
 
-        <Input
-          placeholder="Enter Helper Text"
-          name="helperText"
-          className="input__box"
-          onChange={handleChange}
-          value={currentElement.helperText as string}
-        />
+        {currentElement.type !== "button" && (
+          <Input
+            placeholder="Enter Helper Text"
+            name="helperText"
+            className="input__box"
+            onChange={handleChange}
+            value={currentElement.helperText as string}
+          />
+        )}
 
         {(currentElement.type === "text" ||
           currentElement.type === "number" ||
@@ -376,15 +427,43 @@ export const Main = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            <div>
-              Required:{" "}
-              <Switch
-                className="margin-10"
-                checked={currentElement.required as boolean}
-                onChange={() => handleSwitchChange("required")}
-              />
-              <br />
-            </div>
+            {(currentElement.type === "text" ||
+              currentElement.type === "number" ||
+              currentElement.type === "password" ||
+              currentElement.type === "date" ||
+              currentElement.type === "textarea") && (
+              <>
+                <div>
+                  Required:{" "}
+                  <Switch
+                    className="margin-10"
+                    checked={currentElement.required as boolean}
+                    onChange={() => handleSwitchChange("required")}
+                  />
+                  <br />
+                </div>
+                <div>
+                  Focus:{" "}
+                  <Switch
+                    className="margin-10"
+                    checked={currentElement.focus as boolean}
+                    onChange={() => handleSwitchChange("focus")}
+                  />
+                  <br />
+                </div>
+
+                <div>
+                  Read Only:{" "}
+                  <Switch
+                    className="margin-10"
+                    checked={currentElement.readOnly as boolean}
+                    onChange={() => handleSwitchChange("readOnly")}
+                  />
+                  <br />
+                </div>
+              </>
+            )}
+
             <div>
               Disabled:{" "}
               <Switch
@@ -394,24 +473,34 @@ export const Main = () => {
               />
               <br />
             </div>
-            <div>
-              Focus:{" "}
-              <Switch
-                className="margin-10"
-                checked={currentElement.focus as boolean}
-                onChange={() => handleSwitchChange("focus")}
-              />
-              <br />
-            </div>
-            <div>
-              Read Only:{" "}
-              <Switch
-                className="margin-10"
-                checked={currentElement.readOnly as boolean}
-                onChange={() => handleSwitchChange("readOnly")}
-              />
-              <br />
-            </div>
+            <br />
+
+            {currentElement.type === "button" && (
+              <div>
+                <br />
+                <input
+                  name="type"
+                  type="radio"
+                  value="primary"
+                  onChange={handlerButtonType}
+                />{" "}
+                Primary
+                <input
+                  name="type"
+                  type="radio"
+                  value="link"
+                  onChange={handlerButtonType}
+                />{" "}
+                Link
+                <input
+                  name="type"
+                  type="radio"
+                  value="dashed"
+                  onChange={handlerButtonType}
+                />{" "}
+                Dashed
+              </div>
+            )}
           </div>
         )}
       </Modal>

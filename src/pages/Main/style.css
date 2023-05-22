@@ -7,7 +7,7 @@
 .draggable-part {
   background-color: #f4f4f7;
   padding: 10px;
-  height: 97vh;
+  height: 100vh;
   border-right: 1px solid rgb(0, 0, 0, 0.2);
 }
 .droppable-part {
@@ -110,4 +110,15 @@ textarea{
 }
 textarea:focus{
   outline: 1px solid #b0b5fd;
+}
+
+table, td, th, tr{
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  padding: 10px;
+}
+
+table th{
+  background-color: black;
+  color: white;
+  border: 1px solid white;
 }
