@@ -3,8 +3,9 @@ import Header from "../components/Header/Header";
 import { FinalObjectType } from "../Main/Main";
 import { Button } from "antd";
 import { EditOutlined, FolderViewOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 const Home: React.FC = () => {
-  let data = localStorage.getItem("form-data") || "";
+  let data = localStorage.getItem("form-data") || "[]";
   let parsedData: FinalObjectType[] | [] = JSON.parse(data);
   return (
     <div>
@@ -24,9 +25,11 @@ const Home: React.FC = () => {
                   <td>{index + 1}</td>
                   <td>{data.form_name}</td>
                   <td>
-                    <Button>
-                      <FolderViewOutlined />
-                    </Button>
+                    <Link to={`/form/${data.id}`}>
+                      <Button>
+                        <FolderViewOutlined />
+                      </Button>
+                    </Link>
                     &nbsp;
                     <Button>
                       <EditOutlined />

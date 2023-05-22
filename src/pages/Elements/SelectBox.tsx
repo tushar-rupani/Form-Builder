@@ -6,8 +6,8 @@ import { EditOutlined } from "@ant-design/icons";
 interface InputBoxType {
   data: AllElementType;
   index: number;
-  handleDeleteQuestion: Function;
-  handleEditQuestion: Function;
+  handleDeleteQuestion: Function | undefined;
+  handleEditQuestion: Function | undefined;
 }
 const SelectBox = ({
   data,
@@ -37,13 +37,17 @@ const SelectBox = ({
             <div className="flex">
               <button
                 className="edit-btn"
-                onClick={(e) => handleEditQuestion(e, index)}
+                onClick={(e) => {
+                  handleEditQuestion && handleEditQuestion(e, index);
+                }}
               >
                 <EditOutlined />
               </button>
               <button
                 className="delete-btn"
-                onClick={(e) => handleDeleteQuestion(e, index)}
+                onClick={(e) => {
+                  handleDeleteQuestion && handleDeleteQuestion(e, index);
+                }}
               >
                 X
               </button>

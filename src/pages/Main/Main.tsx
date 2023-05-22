@@ -41,8 +41,6 @@ export const Main = () => {
   const { confirm } = Modal;
   const { state } = useLocation();
 
-  console.log("control comig hjere");
-
   const finalStateObject: FinalObjectType = {
     id: state.id,
     form_name: state.name,
@@ -178,7 +176,7 @@ export const Main = () => {
 
   const handlerButtonType = (e: ChangeEvent<HTMLInputElement>) => {
     const cloneOfObj = { ...currentElement };
-    cloneOfObj.key = e.target.value;
+    cloneOfObj.buttonType = e.target.value;
     setCurrentElement(cloneOfObj);
   };
 
@@ -299,7 +297,7 @@ export const Main = () => {
                       {data.type === "button" && (
                         <Button
                           disabled={data.disable as boolean}
-                          type={data.key as any}
+                          type={data.buttonType as any}
                         >
                           {data.label as string}
                         </Button>

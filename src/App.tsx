@@ -4,12 +4,14 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
+import { OutputForm } from "./pages/Form/OutputForm";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/form/:id" element={<OutputForm />} />
         <Route
           path="/create-form"
           element={

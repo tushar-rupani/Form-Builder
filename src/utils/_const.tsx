@@ -31,8 +31,8 @@ export const indexForElement = {
   6: "Radio",
   7: "Button",
   8: "Date Picker",
-  9: "File"
-}
+  9: "File",
+};
 
 export const iconObjectInitial: { [key: string]: JSX.Element } = {
   terminal: <TerminalIcon />,
@@ -47,15 +47,16 @@ export const iconObjectInitial: { [key: string]: JSX.Element } = {
   file: <AttachFileIcon />,
 };
 
-
 export interface OptionType {
-  id: number,
+  id: number;
   key: string;
   value: string;
-  selected: boolean | string
+  selected: boolean | string;
 }
 
-export const InitialObjectForInput: { [key: string]: string | OptionType[] | boolean | number } = {
+export const InitialObjectForInput: {
+  [key: string]: string | OptionType[] | boolean | number;
+} = {
   id: 0,
   label: "",
   placeholder: "",
@@ -69,5 +70,6 @@ export const InitialObjectForInput: { [key: string]: string | OptionType[] | boo
   readOnly: false,
   defaultValue: "",
   focus: false,
-  options: [{ id: 1, key: "o1", value: "Option 1", selected: true }]
-}
+  buttonType: "",
+  options: [{ id: 1, key: "o1", value: "Option 1", selected: true }],
+};
