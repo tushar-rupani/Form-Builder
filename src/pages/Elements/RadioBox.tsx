@@ -16,8 +16,6 @@ export const RadioBox = ({
   handleEditQuestion,
 }: PropsType) => {
   const { Text } = Typography;
-  console.log("radio", data);
-
   return (
     <Draggable
       key={index.toString()}

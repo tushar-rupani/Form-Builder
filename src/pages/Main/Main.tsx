@@ -20,7 +20,6 @@ import { CheckBox } from "../Elements/CheckBox";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import TextArea from "../Elements/TextArea";
-
 export interface AllElementType {
   [key: string]: string | boolean | OptionType[] | number;
 }
@@ -55,6 +54,7 @@ export const Main = () => {
         ...prev,
         element: item.text,
         type: item.type,
+        tag: item.tag,
       }));
       setAlertVisible(false);
     },
@@ -194,9 +194,7 @@ export const Main = () => {
     finalStateObject.data = allElements;
     let localStorageData = localStorage.getItem("form-data") || "[]";
     let arrayOfData = JSON.parse(localStorageData);
-
     arrayOfData.push(finalStateObject);
-    console.log(arrayOfData);
     localStorage.setItem("form-data", JSON.stringify(arrayOfData));
     navigate("/");
   };
@@ -214,6 +212,7 @@ export const Main = () => {
               text={data.text}
               icon={iconObjectInitial[data.icon]}
               index={index}
+              tag={data.tag}
               type={data.type}
               setDragged={setDragged}
             />
@@ -246,11 +245,7 @@ export const Main = () => {
                 {allElements.length > 0 &&
                   allElements.map((data, index) => (
                     <div>
-                      {(data.type === "text" ||
-                        data.type === "number" ||
-                        data.type === "password" ||
-                        data.type === "date" ||
-                        data.type === "file") && (
+                      {data.tag === "input" && (
                         <InputBox
                           data={data}
                           index={index}
@@ -352,10 +347,7 @@ export const Main = () => {
           />
         )}
 
-        {(currentElement.type === "text" ||
-          currentElement.type === "number" ||
-          currentElement.type === "password" ||
-          currentElement.type === "date" ||
+        {(currentElement.tag === "input" ||
           currentElement.type === "textarea") && (
           <Input
             placeholder="Enter Default Value"
@@ -425,11 +417,7 @@ export const Main = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {(currentElement.type === "text" ||
-              currentElement.type === "number" ||
-              currentElement.type === "password" ||
-              currentElement.type === "date" ||
-              currentElement.type === "textarea") && (
+            {currentElement.tag === "input" && (
               <>
                 <div>
                   Required:{" "}

@@ -7,16 +7,18 @@ export const ElementCard = ({
   index,
   type,
   setDragged,
+  tag,
 }: {
   text: string;
   icon: JSX.Element;
   index: number;
   type: string;
   setDragged: React.Dispatch<React.SetStateAction<boolean>>;
+  tag: string | undefined;
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "div",
-    item: { text, index, type },
+    item: { text, index, type, tag },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

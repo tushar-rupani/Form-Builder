@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/Header/Header";
 import { FinalObjectType } from "../Main/Main";
 import { Button } from "antd";
-import { EditOutlined, FolderViewOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const Home: React.FC = () => {
   let data = localStorage.getItem("form-data") || "[]";
@@ -11,7 +11,7 @@ const Home: React.FC = () => {
     <div>
       <Header>
         <div>
-          <table>
+          <table style={{ width: "98%", margin: "10px" }}>
             <thead>
               <tr>
                 <th>Index</th>
@@ -26,12 +26,12 @@ const Home: React.FC = () => {
                   <td>{data.form_name}</td>
                   <td>
                     <Link to={`/form/${data.id}`}>
-                      <Button>
-                        <FolderViewOutlined />
+                      <Button className="zero">
+                        <EyeOutlined />
                       </Button>
                     </Link>
                     &nbsp;
-                    <Button>
+                    <Button className="zero">
                       <EditOutlined />
                     </Button>
                   </td>

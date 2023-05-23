@@ -1,14 +1,15 @@
 import React from "react";
 import { AllElementType } from "../Main/Main";
 import { Input, Typography } from "antd";
-import { Draggable } from "react-beautiful-dnd";
 import { EditOutlined } from "@ant-design/icons";
+import { Draggable } from "react-beautiful-dnd";
 interface InputBoxType {
   data: AllElementType;
   index: number;
   handleDeleteQuestion: Function | undefined;
   handleEditQuestion: Function | undefined;
 }
+
 const InputBox = ({
   data,
   index,
@@ -34,24 +35,26 @@ const InputBox = ({
               {data.label as string}
               {data.required && <span style={{ color: "red" }}>*</span>}
             </label>
-            <div className="flex">
-              <button
-                className="edit-btn"
-                onClick={(e) => {
-                  handleEditQuestion && handleEditQuestion(e, index);
-                }}
-              >
-                <EditOutlined />
-              </button>
-              <button
-                className="delete-btn"
-                onClick={(e) => {
-                  handleDeleteQuestion && handleDeleteQuestion(e, index);
-                }}
-              >
-                X
-              </button>
-            </div>
+            {(handleDeleteQuestion || handleEditQuestion) && (
+              <div className="flex">
+                <button
+                  className="edit-btn"
+                  onClick={(e) => {
+                    handleEditQuestion && handleEditQuestion(e, index);
+                  }}
+                >
+                  <EditOutlined />
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={(e) => {
+                    handleDeleteQuestion && handleDeleteQuestion(e, index);
+                  }}
+                >
+                  X
+                </button>
+              </div>
+            )}
           </div>
           <Input
             className="margin-10 output_text"

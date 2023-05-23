@@ -1,8 +1,8 @@
 import React from "react";
 import { AllElementType } from "../Main/Main";
 import { Typography } from "antd";
-import { Draggable } from "react-beautiful-dnd";
 import { EditOutlined } from "@ant-design/icons";
+import { Draggable } from "react-beautiful-dnd";
 interface InputBoxType {
   data: AllElementType;
   index: number;

@@ -9,16 +9,16 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 export const dataForElements = [
-  { icon: "terminal", text: "Input Box", type: "text" },
+  { icon: "terminal", text: "Input Box", type: "text", tag: "input" },
   { icon: "textarea", text: "Text Area", type: "textarea" },
-  { icon: "number", text: "Number", type: "number" },
-  { icon: "password", text: "Password", type: "password" },
+  { icon: "number", text: "Number", type: "number", tag: "input" },
+  { icon: "password", text: "Password", type: "password", tag: "input" },
   { icon: "checkbox", text: "CheckBox", type: "checkbox" },
   { icon: "select", text: "Select", type: "select" },
   { icon: "radio", text: "Radio", type: "radio" },
   { icon: "button", text: "Button", type: "button" },
-  { icon: "date", text: "Date Picker", type: "date" },
-  { icon: "file", text: "File", type: "file" },
+  { icon: "date", text: "Date Picker", type: "date", tag: "input" },
+  { icon: "file", text: "File", type: "file", tag: "input" },
 ];
 
 export const indexForElement = {
@@ -71,5 +71,6 @@ export const InitialObjectForInput: {
   defaultValue: "",
   focus: false,
   buttonType: "",
+  tag: "",
   options: [{ id: 1, key: "o1", value: "Option 1", selected: true }],
 };
